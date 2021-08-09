@@ -1,6 +1,6 @@
 # Create your views here.
-from django.http import HttpResponse, Http404
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
 
 from .models import Question
 
@@ -15,10 +15,7 @@ def index(request):
 
 
 def detail(request, question_id):
-    try:
-        question = Question.objects.get(id=question_id)
-    except Question.DoesNotExist:
-        raise Http404(f"Question {question_id} does not exist")
+    question = get_object_or_404(Question, pk=question_id)
     return render(request, "polls/detail.html", {'question': question})
 
 
