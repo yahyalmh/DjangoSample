@@ -1,9 +1,13 @@
 # Create your views here.
 from django.http import HttpResponse
 
+from .models import Question
+
 
 def index(request):
-    return HttpResponse("Hello World, you are at polls index")
+    questions = Question.objects.order_by('-pub_date')
+    response = ', '.join([q.question_text for q in questions])
+    return HttpResponse(response)
 
 
 def detail(request, question_id):
