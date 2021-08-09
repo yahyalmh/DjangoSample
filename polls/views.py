@@ -1,5 +1,6 @@
 # Create your views here.
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.template import loader
 
 from .models import Question
@@ -9,9 +10,9 @@ def index(request):
     questions = Question.objects.order_by('-pub_date')
     # response = ', '.join([q.question_text for q in questions])
 
-    template = loader.get_template("polls/index.html")
+    # template = loader.get_template("polls/index.html")
     context = {'questions': questions}
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(render(request, "polls/index.html", context))
 
 
 def detail(request, question_id):
