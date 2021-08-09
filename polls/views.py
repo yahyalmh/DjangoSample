@@ -1,26 +1,28 @@
 # Create your views here.
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.views import generic
 
 from .models import Question, Choice
 
 
-def index(request):
-    questions = Question.objects.order_by('-pub_date')
-    # template = loader.get_template("polls/index.html")
-    context = {'questions': questions}
-    return HttpResponse(render(request, "polls/index.html", context))
+class IndexView(generic.ListView):
+    template_name = "polls/index.html"
+    context_object_name = "questions"
+
+    def get_queryset(self):
+        return Question.objects.order_by('-pub_date')
 
 
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/detail.html", {'question': question})
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = 'polls/detail.html'
 
 
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/result.html", {'question': question})
+class ResultView(generic.DetailView):
+    model = Question
+    template_name = 'polls/result.html'
 
 
 def vote(request, question_id):
@@ -34,7 +36,7 @@ def vote(request, question_id):
         })
     else:
         selected_choice.votes += 1
-        selected_choice.save() # race condition can solve with F() function
+        selected_choice.save()  # race condition can solve with F() function
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question_id,)))
