@@ -7,8 +7,6 @@ from .models import Question
 
 def index(request):
     questions = Question.objects.order_by('-pub_date')
-    # response = ', '.join([q.question_text for q in questions])
-
     # template = loader.get_template("polls/index.html")
     context = {'questions': questions}
     return HttpResponse(render(request, "polls/index.html", context))
